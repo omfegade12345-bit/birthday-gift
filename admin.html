@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Gift Admin</title>
+  <style>
+    :root{--navy:#0d1626;--berry:#d6204f;--ink:#3a1530}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--navy);font-family:system-ui,Segoe UI,Roboto,sans-serif;color:#fff;padding:24px 14px 60px}
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{margin:0 0 4px;font-size:1.7rem}h1 span{color:#ff4d73}
+    .muted{color:#9fb0cf;margin:0 0 18px}
+    .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .bar input{flex:1;min-width:200px;padding:10px 12px;border-radius:10px;border:0;font-size:1rem}
+    .btn{background:var(--berry);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-size:.95rem;text-decoration:none;cursor:pointer}
+    .btn.ghost{background:#24324d}
+    .card{background:#fff;color:var(--ink);border-radius:14px;overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:.95rem}
+    th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #f1dbe3;white-space:nowrap}
+    th{background:#ffeef4;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+    td.wrap-cell{white-space:normal;min-width:180px;max-width:320px}
+    code{background:#f4eef9;padding:2px 6px;border-radius:6px}
+    .del{background:none;border:1px solid #d6204f;color:#d6204f;border-radius:8px;padding:5px 10px;cursor:pointer}
+    .del:hover{background:#d6204f;color:#fff}
+    .empty{padding:30px;text-align:center;color:#8a5a73}
+    a.link{color:#d6204f}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Gift <span>Admin</span></h1>
+  <p class="muted">{{ total }} gift{{ '' if total == 1 else 's' }} created in total{% if q %} · showing {{ rows|length }} match{{ '' if rows|length == 1 else 'es' }} for “{{ q }}”{% endif %}</p>
+
+  <form class="bar" method="get">
+    <input name="q" value="{{ q }}" placeholder="Search sender, receiver or birthday…">
+    <button class="btn" type="submit">Search</button>
+    {% if q %}<a class="btn ghost" href="{{ url_for('admin') }}">Clear</a>{% endif %}
+    <a class="btn ghost" href="{{ url_for('admin_export') }}">Download CSV</a>
+  </form>
+
+  <div class="card">
+    {% if rows %}
+    <table>
+      <thead><tr>
+        <th>#</th><th>Sender</th><th>Receiver</th><th>Birthday</th><th>Passcode</th><th>Photos</th><th>Created</th><th>Letter</th><th>Gift link</th><th></th>
+      </tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr id="row-{{ r['id'] }}">
+          <td>{{ loop.index }}</td>
+          <td><b>{{ r['sender_name'] }}</b></td>
+          <td><b>{{ r['receiver_name'] }}</b></td>
+          <td>{{ r['birthday'] }}</td>
+          <td><code>{{ r['passcode'] }}</code></td>
+          <td>{{ r['photo_count'] }}</td>
+          <td>{{ r['created_at'].replace('T', ' ') }}</td>
+          <td class="wrap-cell">{{ r['letter'][:90] }}{{ '…' if r['letter']|length > 90 }}</td>
+          <td><a class="link" target="_blank" href="{{ url_for('gift_page', gift_id=r['id']) }}">open</a> ·
+              <a class="link" target="_blank" href="{{ url_for('gift_page', gift_id=r['id']) }}?preview=1">preview</a></td>
+          <td><button class="del" data-id="{{ r['id'] }}" data-name="{{ r['sender_name'] }} → {{ r['receiver_name'] }}">Delete</button></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">No gifts found.</div>
+    {% endif %}
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.del').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Delete this gift permanently?\n' + b.dataset.name)) return;
+    const r = await fetch('/admin/delete/' + encodeURIComponent(b.dataset.id), { method: 'POST', headers: { 'X-Requested-With': 'fetch' } });
+    if (r.ok) location.reload(); else alert('Could not delete (' + r.status + ')');
+  }));
+</script>
+</body>
+</html>

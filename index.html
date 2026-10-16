@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secret Birthday Gift</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gloria+Hallelujah&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="setup-body">
+  <main class="setup">
+    <h1 class="title">Secret <span>Birthday</span> Gift</h1>
+    <p class="sub">Fill this in once. The gift unlocks automatically at <b>12:00 AM</b> on the birthday.</p>
+
+    <form id="form" class="card" novalidate>
+      <div class="row">
+        <label>Sender name
+          <input name="sender_name" maxlength="40" placeholder="Your name" required>
+          <small class="err" data-for="sender_name"></small>
+        </label>
+        <label>Receiver (accepter) name
+          <input name="receiver_name" maxlength="40" placeholder="Their name" required>
+          <small class="err" data-for="receiver_name"></small>
+        </label>
+      </div>
+
+      <div class="row">
+        <label>Birthday date
+          <input type="date" name="birthday" id="birthday" required>
+          <small class="err" data-for="birthday"></small>
+        </label>
+        <label>4-digit secret passcode
+          <input name="passcode" id="passcode" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="auto: DDMM" required>
+          <small class="err" data-for="passcode"></small>
+        </label>
+      </div>
+      <p class="hint" id="countdownHint">Pick the birthday and I'll set the countdown to 12:00 AM.</p>
+
+      <label>Your letter <span class="opt">(optional)</span>
+        <textarea name="letter" rows="4" maxlength="1200" placeholder="Leave empty to use a sweet default letter"></textarea>
+      </label>
+
+      <fieldset>
+        <legend>Memory photos <span class="opt">(optional, up to 3)</span></legend>
+        <div class="photos">
+          {% for i in range(3) %}
+          <div class="photo">
+            <input type="file" name="photo{{ i }}" accept="image/*">
+            <input name="caption{{ i }}" maxlength="40" placeholder="Caption {{ i + 1 }}">
+          </div>
+          {% endfor %}
+        </div>
+        <small class="err" data-for="photos"></small>
+      </fieldset>
+
+      <button class="btn" type="submit" id="submitBtn">Create the gift &#127873;</button>
+    </form>
+
+    <section id="result" class="card result" hidden>
+      <h2>Your gift is ready! &#127881;</h2>
+      <p>Send this link. It stays locked until <b id="unlockText"></b>.</p>
+      <div class="linkbox"><input id="link" readonly><button class="btn small" id="copy" type="button">Copy</button></div>
+      <p class="hint">Passcode: <b id="codeShow"></b> &middot; <a id="preview" target="_blank">Preview (skips countdown)</a></p>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/setup.js') }}"></script>
+</body>
+</html>

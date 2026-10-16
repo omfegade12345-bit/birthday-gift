@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secret Birthday Gift</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gloria+Hallelujah&family=Special+Elite&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="gift-body">
+  <canvas id="confetti"></canvas>
+
+  <!-- 1. midnight countdown -->
+  <section class="stage active" id="s-countdown">
+    <div class="curtain left"></div><div class="curtain right"></div>
+    <div class="clock-wrap">
+      <h3 class="who script" id="cdWho"></h3>
+      <div class="clock" id="clock">
+        <span class="n n12">XII</span><span class="n n3">III</span><span class="n n6">VI</span><span class="n n9">IX</span>
+        <i class="hand h" id="hH"></i><i class="hand m" id="hM"></i><i class="hand s" id="hS"></i><b class="pin"></b>
+      </div>
+      <div class="digital"><small>&#9733; MIDNIGHT COUNTDOWN &#9733;</small>
+        <div id="digits">00:00:00</div>
+        <small id="cdNote">Watch the clock strike 12:00</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. passcode -->
+  <section class="stage" id="s-pass">
+    <div class="pass-left"><div class="frame"><div class="art">&#127874;<em>&#127880;</em><em>&#127881;</em></div></div></div>
+    <div class="pass-right">
+      <h3>Enter a passcode</h3><p id="passHi">Enter the 4-digit secret passcode</p>
+      <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+      <div class="keypad" id="keypad">
+        <button>1</button><button>2</button><button>3</button>
+        <button>4</button><button>5</button><button>6</button>
+        <button>7</button><button>8</button><button>9</button>
+        <button data-k="del">&#9003;</button><button>0</button><button data-k="ok">&#10084;</button>
+      </div>
+      <small id="passMsg"></small>
+    </div>
+  </section>
+
+  <!-- 3. made something -->
+  <section class="stage pink" id="s-made">
+    <h2 class="script">I have made something for you</h2>
+    <div class="bear" aria-hidden="true">&#129528;</div>
+    <p class="script small">Do you wanna see it ?</p>
+    <div class="btns"><button class="pill" id="yes1">YES</button><button class="pill" id="no1">NO</button></div>
+  </section>
+
+  <!-- 4. excited -->
+  <section class="stage pink" id="s-excited">
+    <h2 class="script">Are you really excited?</h2>
+    <div class="bear" aria-hidden="true">&#129321;</div>
+    <div class="btns"><button class="pill" id="yes2">YES</button><button class="pill" id="yes3">YES</button></div>
+  </section>
+
+  <!-- 5. hearts -->
+  <section class="stage pink" id="s-hearts">
+    <div class="hearts" id="hearts">
+      <button class="heart" data-i="0"><span>&#127872;</span></button>
+      <button class="heart" data-i="1"><span>&#128140;</span></button>
+      <button class="heart" data-i="2"><span>&#127856;</span></button>
+    </div>
+    <div class="bubble"><div class="bear sm" aria-hidden="true">&#128571;</div>
+      <p class="script" id="heartTip">Tap on the mystery box<br>to unlock your gifts!</p></div>
+  </section>
+
+  <!-- 6. memories -->
+  <section class="stage overlay" id="s-memories">
+    <div class="window">
+      <button class="x" data-close>&times;</button>
+      <h2 class="marquee" id="memTitle"></h2>
+      <div class="string"></div>
+      <div class="polaroids" id="polaroids"></div>
+      <p class="tiny">Tap any photo to see it up close &#10084;</p>
+    </div>
+  </section>
+
+  <!-- 7. letter -->
+  <section class="stage purple" id="s-letter">
+    <div class="frame big"><div class="art">&#128141;</div></div>
+    <div class="letter">
+      <p id="letterText"></p>
+      <button class="pill small" id="letterNext" hidden>Next &#10084;</button>
+    </div>
+  </section>
+
+  <!-- 8. wish -->
+  <section class="stage overlay" id="s-wish">
+    <div class="window wish">
+      <h2 class="marquee">MAKE A WISH</h2>
+      <div class="cake" id="cake">
+        <div class="candles" id="candles"></div>
+        <div class="tier t1"></div><div class="tier t2"></div><div class="tier t3"></div><div class="plate"></div>
+      </div>
+      <p class="tiny" id="wishTip">Tap each candle to blow it out &amp; make a wish &#10024;</p>
+      <div class="final" id="final" hidden>
+        <h2 class="marquee">HAPPY BIRTHDAY!</h2>
+        <p class="script" id="finalMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" hidden><button class="x" data-lbclose>&times;</button><figure><div id="lbImg"></div><figcaption id="lbCap"></figcaption></figure></div>
+
+  <script>window.GIFT = {{ info|tojson }};</script>
+  <script src="{{ url_for('static', filename='js/gift.js') }}"></script>
+</body>
+</html>
